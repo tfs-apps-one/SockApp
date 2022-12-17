@@ -38,25 +38,67 @@ public class MainActivity extends AppCompatActivity {
         inp_IpAdress = (EditText) findViewById(R.id.input_ipAdress);
     }
 
+    /* ラジオボタン：ソケットサーバー　モード[ON] */
     public void onRbtn_Server(View view)
     {
         mode = 0;
         rbtn_Svr.setChecked(true);
         rbtn_Clt.setChecked(false);
     }
+    /* ラジオボタン：ソケットクライアント　モード[ON] */
     public void onRbtn_Client(View view)
     {
         mode = 1;
         rbtn_Svr.setChecked(false);
         rbtn_Clt.setChecked(true);
     }
-
+    /* ボタン：モード強制終了 */
     public void onStop(View view) {
         taskrun = false;
         message.setText("初期状態 .. .. .. ");
     }
+    /* ボタン：スタート */
+    public void onStart(View view) {
 
+        if (mode == 0){
+            ServerStart();
+        }else{
+            ClientStart();
+        }
+    }
+    /* ボタン：PING */
+    public void onPing(View v){
+        String ipadrr = inp_IpAdress.getText().toString();
+        String tempcmd = "ping -c 5 " + ipadrr;
+        Thread thread = new Thread(){
+            public void run() {
+                message.setText("---PING START---");
+                Runtime runtime = Runtime.getRuntime();
+                Process proc = null;
+                try{
+                    if (ipadrr.isEmpty()) {
+                        proc = runtime.exec("ping -c 5 192.168.1.17");
+                    }
+                    else {
+                        proc = runtime.exec(tempcmd);
+                    }
+                    proc.waitFor();
+                }catch(Exception e){}
+                int exitVal = proc.exitValue();
+                if(exitVal == 0){
+                    message.setText("-->PING OK ");
+                }
+                else{
+                    message.setText("-->PING NG ");
+                }
+            }
+        };
+        thread.start();
+    }
 
+    /*
+        ソケットクライアント　モード処理
+     */
     public void ClientStart(){
         String tmpAddress = inp_IpAdress.getText().toString();
         taskrun = true;
@@ -65,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
             myClt = new MyClient(tmpAddress);
         }
 
+        /* 専用スレッド起動 */
         Thread thread = new Thread(){
             public void run() {
                 int step = 0;
@@ -108,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 break;
                         }
+                        //画面更新
                         message.setText(myClt.str_status);
                         sleep(300);
                     }
@@ -124,15 +168,9 @@ public class MainActivity extends AppCompatActivity {
         thread.start();
     }
 
-    public void onStart(View view) {
-
-        if (mode == 0){
-            ServerStart();
-        }else{
-            ClientStart();
-        }
-    }
-
+    /*
+        ソケットサーバー　モード処理
+     */
     public void ServerStart() {
 
         taskrun = true;
@@ -141,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
             mySvr = new MyServer();
         }
 
+        /* 専用スレッド起動 */
         Thread thread = new Thread(){
             public void run() {
                 int step = 0;
@@ -160,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 break;
                             case 2: //送信
-                                if (mySvr.SendMessage("★☆私はサーバーです")) {
+                                if (mySvr.SendMessage()) {
                                     step = 1;
                                 }
                                 break;
@@ -170,62 +209,11 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     // loop 抜ける
-                    myClt.DisConnect();
-                    myClt = null;
+                    mySvr.DisConnect();
+                    mySvr = null;
 
                 }catch(Exception e){
                     return;
-                }
-            }
-        };
-        thread.start();
-    }
-
-
-    /*
-    public void onStart(View view)
-    {
-        String tmpAddress = inp_IpAdress.getText().toString();
-
-        context = getApplicationContext();
-
-        int aa= 100;
-        if (mode == 0){
-            if (mySvr == null){
-                mySvr = new MyServer();
-                mySvr.run();
-            }
-            if (mySvr.recv_mess != null) {
-                if (mySvr.recv_mess.isEmpty() == false) {
-                    message.setText(mySvr.recv_mess);
-                }
-            }
-        }
-        else {
-            if (myClt == null){
-                myClt = new MyClient(tmpAddress);
-            }
-//            myClt.run();
-            myClt.runSample();
-        }
-    }
-*/
-    public void onPing(View v){
-        Thread thread = new Thread(){
-            public void run() {
-                message.setText("---- ");
-                Runtime runtime = Runtime.getRuntime();
-                Process proc = null;
-                try{
-                    proc = runtime.exec("ping -c 5 192.168.1.17");
-                    proc.waitFor();
-                }catch(Exception e){}
-                int exitVal = proc.exitValue();
-                if(exitVal == 0){
-                    message.setText("PING OK ");
-                }
-                else{
-                    message.setText("PING NG ");
                 }
             }
         };

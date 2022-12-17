@@ -1,32 +1,17 @@
 package tfsapps.sockapp;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.TimerTask;
-
-import android.content.Context;
-import android.os.Handler;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 public class MyClient {
-    //public class MyClient extends TimerTask {
 
     public String str_status = "";
     private Socket cSocket = null;
     private OutputStream writer = null; //書込み
     private InputStream reader = null;  //読込み
-
-    private Handler mHandler = new Handler();   //UI Threadへのpost用ハンドラ
     private String ipaddress = "192.168.1.17";
     private int counter = 0;
 
@@ -92,8 +77,6 @@ public class MyClient {
             reader = cSocket.getInputStream();
             size = reader.read(w);
             temp = new String(w, 0, size, "UTF-8");
-
-
             str_status += ">>>" + temp;
 
         } catch (IOException e) {
@@ -134,7 +117,7 @@ public class MyClient {
     public String RecvMessage() {
 
         String temp = "";
-        byte [] w = new byte[4048];
+        byte w[] = new byte[4048];
         int size;
         if (cSocket.isConnected() == false){
             return temp;
