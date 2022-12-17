@@ -117,9 +117,13 @@ public class MyClient {
         // テキスト送信
         try {
             writer = cSocket.getOutputStream();
+            /*
             counter++;
             String str = (temp + counter);
-            writer.write(str.getBytes("UTF-8"));
+            writer.write(str.getBytes("UTF-8"));*/
+
+            String str = SendCmd_LA6();
+            writer.write(str.getBytes("US-ASCII"));
             str_status += "送信>>>："+str+"\n";
 
         } catch (IOException e) {
@@ -158,4 +162,32 @@ public class MyClient {
         }
         return temp;
     }
+
+    /*
+        LA6
+     */
+    public String SendCmd_LA6(){
+        String tmp_cmd = "";
+        byte [] w = new byte[128];
+        w[0] = 0x0a;
+        w[1] = 'L';
+        w[2] = 'A';
+        w[3] = '6';
+        w[4] = 'L';
+        w[5] = '0';
+        w[6] = '0';
+        w[7] = '1';
+        w[8] = 'S';
+        w[9] = 'S';
+        w[10] = 0x0d;
+        try {
+            tmp_cmd = new String(w, 0, 11, "US-ASCII");
+        }
+        catch (IOException e){
+
+        }
+        return tmp_cmd;
+    }
+
+
 }
