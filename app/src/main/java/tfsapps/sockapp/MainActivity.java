@@ -1,12 +1,8 @@
 package tfsapps.sockapp;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -15,16 +11,12 @@ public class MainActivity extends AppCompatActivity {
 
     private MyServer mySvr;
     private MyClient myClt;
-
     private TextView message;
     private RadioButton rbtn_Svr;
     private RadioButton rbtn_Clt;
     private EditText inp_IpAdress;
-    private Button btn_Start;
 
     private int mode;
-    private Context context;
-
     private boolean taskrun = false;
 
     @Override
@@ -142,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                                     step = 0;
                                 }
                                 else {
-                                    if (myClt.RecvMessage().isEmpty() == false) {
+                                    if (myClt.RecvMessage()) {
                                         step = 1;
                                         retry = 0;
                                     } else {

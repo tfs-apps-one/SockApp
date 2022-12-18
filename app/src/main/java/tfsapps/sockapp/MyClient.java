@@ -54,39 +54,6 @@ public class MyClient {
     }
 
     /*********************************
-     メッセージ送信
-     *********************************/
-    public String SendRecvMessage(String send) {
-
-        String temp = "";
-        byte [] w = new byte[4048];
-        int size;
-
-        if (cSocket.isConnected() == false){
-            return temp;
-        }
-
-        // テキスト送信
-        try {
-            writer = cSocket.getOutputStream();
-            counter++;
-            String str = (send + counter);
-            writer.write(str.getBytes("UTF-8"));
-            str_status += "[3] テキスト送信\n";
-
-            reader = cSocket.getInputStream();
-            size = reader.read(w);
-            temp = new String(w, 0, size, "UTF-8");
-            str_status += ">>>" + temp;
-
-        } catch (IOException e) {
-            return temp;
-        }
-        return temp;
-    }
-
-
-    /*********************************
         メッセージ送信
      *********************************/
     public boolean SendMessage(String temp) {
@@ -114,13 +81,13 @@ public class MyClient {
     /*********************************
      メッセージ受信
      *********************************/
-    public String RecvMessage() {
+    public Boolean RecvMessage() {
 
         String temp = "";
         byte w[] = new byte[4048];
         int size;
         if (cSocket.isConnected() == false){
-            return temp;
+            return false;
         }
         str_status += "[4] テキスト受信中です・・・\n";
 
@@ -129,7 +96,7 @@ public class MyClient {
             reader = cSocket.getInputStream();
             size = reader.read(w);
             if (size <= 0)  {
-                return temp;
+                return false;
             }
             else{
                 temp = new String(w, 0, size, "UTF-8");
@@ -137,8 +104,8 @@ public class MyClient {
             str_status += "受信<<<："+temp+"\n";
 
         } catch (IOException e) {
-            return temp;
+            return false;
         }
-        return temp;
+        return true;
     }
 }
