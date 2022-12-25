@@ -11,7 +11,9 @@ public class MainActivity extends AppCompatActivity {
 
     private MyServer mySvr;
     private MyClient myClt;
+    private TextView status;
     private TextView message;
+    private TextView history;
     private RadioButton rbtn_Svr;
     private RadioButton rbtn_Clt;
     private EditText inp_IpAdress;
@@ -26,7 +28,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        status = (TextView) findViewById(R.id.status);
         message = (TextView) findViewById(R.id.message);
+        history = (TextView) findViewById(R.id.history);
+
         rbtn_Svr = (RadioButton) findViewById(R.id.radio_server);
         rbtn_Clt = (RadioButton) findViewById(R.id.radio_client);
         inp_IpAdress = (EditText) findViewById(R.id.input_ipAdress);
@@ -160,12 +165,14 @@ public class MainActivity extends AppCompatActivity {
                                         if (myClt.recv_mess.indexOf("nA1")  != -1){
                                             myClt.RecvCmd_nA1();
                                             /* 画面更新だけ行う */
-                                            message.setText(myClt.now_status);
+                                            status.setText(myClt.now_machine+"号機\n"+myClt.now_status);
                                         }
                                         //  エラー通知
                                         else if (myClt.recv_mess.indexOf("iA0")  != -1){
                                             /* エラー解析と表示処理 */
-
+                                            if (myClt.RecvCmd_iA0()){
+                                                message.setText(myClt.now_error_id+"\n"+myClt.now_error_mess);
+                                            }
                                             if (myClt.SendMessage("iA0")) {
                                                 step = 2;
                                             } else {

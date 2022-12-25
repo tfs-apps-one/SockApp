@@ -11,7 +11,10 @@ public class MyClient {
     public String str_status = "";
     public String recv_mess = "";
     public String send_mess = "";
+    public String now_machine = "";
     public String now_status = "";
+    public String now_error_id = "";
+    public String now_error_mess = "";
     private Socket cSocket = null;
     private OutputStream writer = null; //書込み
     private InputStream reader = null;  //読込み
@@ -150,10 +153,14 @@ public class MyClient {
         8:  エラー発生中
      *********************************/
     public boolean RecvCmd_nA1(){
+        now_machine = "";
         now_status = "";
 
         try {
             byte tmp[] = recv_mess.getBytes("US-ASCII");
+
+            now_machine = new String(tmp, 19, 3, "US-ASCII");
+
             if (tmp[24] == 0x32){
                 now_status = "非生産中";
             }
@@ -172,6 +179,31 @@ public class MyClient {
             return false;
         }
     }
+    /*********************************
+        iA0 エラー通知
+     *********************************/
+    public boolean RecvCmd_iA0(){
+        now_error_id = "";
+        now_error_mess= "";
+
+        try {
+            byte tmp[] = recv_mess.getBytes("US-ASCII");
+
+            now_error_id = new String(tmp, 46, 5, "US-ASCII");
+            now_error_id += "-";
+            now_error_id += new String(tmp, 51, 4, "US-ASCII");
+
+            byte tmp2[] = recv_mess.getBytes("UTF-8");
+            now_error_mess = new String(tmp2, 71, 200, "UTF-8");
+//            now_error_mess = recv_mess.substring(71,50);
+
+            return true;
+        }
+        catch (IOException e){
+            return false;
+        }
+    }
+
     /*********************************
         iA0 エラー通知応答
      *********************************/

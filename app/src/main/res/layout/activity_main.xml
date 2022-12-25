@@ -6,73 +6,176 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_alignParentStart="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="match_parent"
+            android:text="１号機：状態"
+            android:textSize="18dp"
+            android:background="@color/white"
+            android:textColor="@color/teal_700"
+            />
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:text="00361-0000 電源ONしました"
+            android:textSize="20dp"
+            android:background="@color/white"
+            android:textColor="@color/design_default_color_error"
+            />
+    </LinearLayout>
+
+
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/history"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:text="これからソケットサービスをスタートします"
-        android:textSize="20dp"
+        android:text="--履歴--"
         android:textColor="@color/white"
         android:background="@color/cardview_dark_background"
-        android:layout_marginTop="30dp"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <RadioButton
-        android:id="@+id/radio_server"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ソケットサーバー [ON] "
-        android:onClick="onRbtn_Server"
-        app:layout_constraintTop_toBottomOf="@+id/message"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout1"
         />
 
-    <RadioButton
-        android:id="@+id/radio_client"
+    <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ソケットクライアント [ON] "
-        android:onClick="onRbtn_Client"
-        app:layout_constraintTop_toBottomOf="@+id/radio_server"
-        />
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/input_ipAdress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:digits="0123456789."
-        android:textSize="24dp"
-        android:textColor="@color/white"
-        android:background="@color/cardview_dark_background"
-        app:layout_constraintTop_toBottomOf="@+id/radio_client"
-        tools:ignore="SpeakableTextPresentCheck" />
+        <RadioButton
+            android:id="@+id/radio_server"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="サーバー [ON] "
+            android:onClick="onRbtn_Server"
+            app:layout_constraintTop_toBottomOf="@+id/history"
+            />
 
-    <Button
-        android:id="@+id/Start"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="START"
-        android:onClick="onStart"
-        app:layout_constraintTop_toBottomOf="@+id/input_ipAdress"
-        />
+        <RadioButton
+            android:id="@+id/radio_client"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="クライアント [ON] "
+            android:onClick="onRbtn_Client"
+            app:layout_constraintTop_toBottomOf="@+id/radio_server"
+            />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/Stop"
+    <LinearLayout
+        android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="STOP"
-        android:onClick="onStop"
-        app:layout_constraintTop_toBottomOf="@+id/Start"
-        />
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout5"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/Ping"
+        <TextView
+            android:id="@+id/ip_title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:text="AL(IP)"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            />
+
+        <EditText
+            android:id="@+id/input_ipAdress"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:inputType="number"
+            android:digits="0123456789."
+            android:textSize="22dp"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="PING"
-        android:onClick="onPing"
-        app:layout_constraintTop_toBottomOf="@+id/Stop"
-        />
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/history"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/Start"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:text="START"
+            android:textSize="20dp"
+            app:backgroundTint="@null"
+            android:textColor="@color/white"
+            android:background="@color/teal_700"
+            android:onClick="onStart"
+            />
+
+        <Button
+            android:id="@+id/Stop"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:text="STOP"
+            android:textSize="20dp"
+            app:backgroundTint="@null"
+            android:textColor="@color/white"
+            android:background="@color/teal_700"
+            android:onClick="onStop"
+            />
+
+        <Button
+            android:id="@+id/Ping"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:text="PING"
+            android:textSize="20dp"
+            app:backgroundTint="@null"
+            android:textColor="@color/white"
+            android:background="@color/design_default_color_error"
+            android:onClick="onPing"
+            />
+    </LinearLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
