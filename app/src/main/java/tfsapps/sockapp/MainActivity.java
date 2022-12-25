@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private int mode;
     private boolean taskrun = false;
 
+    private boolean sv_recv_wait = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
 
     /*
         ソケットクライアント　モード処理
+        LA6　機械番号通知（PC→AL、AL→PC）　※起動局がPC、サーバーとの通信開始コマンド
+        nA1　状態通知（AL→PC）　　　　　　　※応答なし
+        iA0　エラー通知（AL→PC、PC→AL）　　
+        vA0　実績通知（AL→PC、PC→AL）　
      */
     public void ClientStart(){
         String tmpAddress = inp_IpAdress.getText().toString();
@@ -104,47 +110,74 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 int step = 0;
                 int retry = 0;
-
+                sv_recv_wait = false;
                 try {
                     while (taskrun) {
                         switch (step) {
                             case 0: //接続待ち
                                 if (myClt.Connect()) {
-                                    step = 1;
+                                    step = 2;
                                 }
                                 break;
-                            case 1: //送信
+                                /*
+                            case 1: //器物確認（LA6）
                                 if (retry > 5) {
                                     myClt.DisConnect();
-                                    retry = 0;
-                                    step = 0;
+                                    retry = 0;  step = 0;
                                 }
                                 else {
-                                    if (myClt.SendMessage("テストメッセージ")) {
-                                        step = 2;
-                                    } else {
-                                        retry++;
+                                    if (sv_recv_wait == false) {
+                                        if (myClt.SendMessage("LA6")) {
+                                            sv_recv_wait = true;
+                                            step = 1;
+                                        } else {
+                                            retry++;
+                                        }
+                                    }
+                                    else{
+                                        if(myClt.RecvMessage() == true){
+                                            if (myClt.recv_mess.indexOf("LA6") != -1) {
+                                                sv_recv_wait = true;
+                                                step = 2;
+                                            }
+                                        }
+                                        else{
+                                            retry++;
+                                        }
                                     }
                                 }
                                 break;
-                            case 2: //受信
+
+                                 */
+                            case 2: //上記以外
                                 if (retry > 5) {
                                     myClt.DisConnect();
-                                    retry = 0;
-                                    step = 0;
+                                    retry = 0;  step = 0;
                                 }
                                 else {
-                                    if (myClt.RecvMessage()) {
-                                        step = 1;
-                                        retry = 0;
-                                    } else {
-                                        retry++;
+                                    if (myClt.RecvMessage() == true) {
+                                        //  状態通知（ポーリング受信）
+                                        if (myClt.recv_mess.indexOf("nA1")  != -1){
+                                            myClt.RecvCmd_nA1();
+                                            /* 画面更新だけ行う */
+                                            message.setText(myClt.now_status);
+                                        }
+                                        //  エラー通知
+                                        else if (myClt.recv_mess.indexOf("iA0")  != -1){
+                                            /* エラー解析と表示処理 */
+
+                                            if (myClt.SendMessage("iA0")) {
+                                                step = 2;
+                                            } else {
+                                                retry++;
+                                            }
+                                        }
                                     }
                                 }
                                 break;
                         }
                         //画面更新
-                        message.setText(myClt.str_status);
+//                        message.setText(myClt.str_status);
                         sleep(300);
                     }
 
